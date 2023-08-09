@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="content"></div>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/jsx">
+        function Intern({test}){
+            return <span>{test}</span>
+        }
+        function Prova(){
+            const arrNumber = [1,2,3,4]
+            return (<div><h1>CIAO, <Intern test="FROSINONE"/></h1>
+                    <ul>{arrNumber.map(text => <li key={text}> {text} </li>)}</ul>
+                 </div>);
+        }
+        let content = document.getElementById("content");
+        ReactDOM.render(<Prova />, content)
+    </script>
+    </script>
+</body>
+</html>
