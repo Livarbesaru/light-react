@@ -2,6 +2,8 @@
   "name": "lightReact",
   "version": "1.0.0",
   "dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
     "mongoose": "^7.6.2",
     "next": "^13.5.5"
   },
@@ -10,6 +12,6 @@
     "save-dev": "^0.0.1-security"
   },
   "scripts": {
-    "nodemon-dev": "nodemon script.js"
+    "nodemon-dev": "nodemon server.js"
   }
 }
