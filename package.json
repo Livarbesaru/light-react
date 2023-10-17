@@ -2,5 +2,10 @@
   "name": "lightReact",
   "version": "1.0.0",
   "dependencies": {
+    "nodemon": "^3.0.1",
+    "save-dev": "^0.0.1-security"
+  },
+  "scripts": {
+    "nodemon-dev": "nodemon script.js"
   }
 }
