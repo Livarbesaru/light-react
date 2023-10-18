@@ -4,6 +4,7 @@ const app = express()
 app.set('view engine','ejs')
 app.use(logger)
 app.use(express.urlencoded({extended:true}))
+app.use(express.json())
 app.get('/',(req,res)=>{
     console.log("here")
     res.render('index',{text:"World"})
