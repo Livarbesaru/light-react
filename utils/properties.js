@@ -1,5 +1,4 @@
 const fileReader = require("./fileReader")
-const {error} = require("next/dist/build/output/log");
 
 class Properties{
     map;
