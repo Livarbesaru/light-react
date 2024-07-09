@@ -6,6 +6,15 @@ class Datasource{
         this.mongo = mongoose;
         this.connection = this.mongo.connect(url);
     }
+
+
+    createSchema(schemaStructure){
+        return new this.mongo.Schema(schemaStructure);
+    }
+
+    createModel(name,schema){
+        this.mongo.model(name,schema);
+    }
 }
 
 module.exports = Datasource;

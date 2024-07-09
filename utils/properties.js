@@ -16,7 +16,7 @@ class Properties{
                     res(`Properties file ${name} has been loaded`);
                     console.log(`file ${file} has been loaded in Properties =>`, parsedData);
                 }else{
-                    rej('fuck properties');
+                    rej(`Properties file ${name} has not been loaded`);
                 }
             });
         })
