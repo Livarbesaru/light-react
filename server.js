@@ -31,8 +31,8 @@ async function start(generalProperties){
 function differentResponseData(path,res,generalProperties,restMap){
     console.log("call on path:%s",path)
     try{
-        if(generalProperties["server"]["not-mapped-api"][path] == null){
-        let data = restMap.get(path)["data"];
+        if(restMap.get(path) != null){
+            let data = restMap.get(path)["data"];
             if(data == null){
                 data = restMap.get("/")["data"]
                 path = "/"
@@ -40,10 +40,16 @@ function differentResponseData(path,res,generalProperties,restMap){
             res.writeHead(200, {'Content-Type': restMap.get(path)["type"]})
             res.write(data);
             res.end();
+        }else{
+            rejectRequest(res,404);
         }
     }catch(error){
         console.error("error with path %s %s",path,error);
-        res.writeHead(400);
-        res.end();
+        rejectRequest(res,500);
     }
+}
+
+function rejectRequest(res,fault){
+    res.writeHead(fault);
+    res.end();
 }

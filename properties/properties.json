@@ -5,9 +5,6 @@
     "pages-path":"pages",
     "http-data-format":{
       "html":"text/html"
-    },
-    "not-mapped-api":{
-      "/favicon.ico":1
     }
   }
 }
