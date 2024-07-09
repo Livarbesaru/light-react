@@ -20,7 +20,7 @@ async function start(generalProperties){
     }
     let server = http.createServer(function (req, res) {
         let urlPath = url.parse(req.url).pathname;
-        differentResponseData(urlPath,res,generalProperties,restMap);
+        differentResponseData(urlPath,res,restMap);
     });
     server.listen(port,hostname,()=>{
         console.log(`Server started on port:${port} with hostname:${hostname} complete url: %s`,`http://${hostname}:${port}`)
@@ -28,18 +28,17 @@ async function start(generalProperties){
 }
 
 
-function differentResponseData(path,res,generalProperties,restMap){
+function differentResponseData(path,res,restMap){
     console.log("call on path:%s",path)
     try{
         if(restMap.get(path) != null){
+            let resource = restMap.get(path);
             let data = restMap.get(path)["data"];
             if(data == null){
                 data = restMap.get("/")["data"]
                 path = "/"
             }
-            res.writeHead(200, {'Content-Type': restMap.get(path)["type"]})
-            res.write(data);
-            res.end();
+            acceptRequest(res,data,{"Content-Type": resource["type"],"Content-Length":resource["data"].length},"utf8")
         }else{
             rejectRequest(res,404);
         }
@@ -49,6 +48,14 @@ function differentResponseData(path,res,generalProperties,restMap){
     }
 }
 
+function acceptRequest(res,data,headers,encoding){
+    for(const [key,value] of Object.entries(headers)){
+        res.setHeader(key,value);
+    }
+    res.writeHead(200);
+    res.write(data,encoding);
+    res.end(data,encoding);
+}
 function rejectRequest(res,fault){
     res.writeHead(fault);
     res.end();
