@@ -5,7 +5,7 @@
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "mongoose": "^7.6.3",
-    "next": "^13.5.5"
+    "url": "^0.11.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",
