@@ -20,8 +20,8 @@ async function start(generalProperties){
         restMap.set(resourceRestPath,resourceToSet);
     }
     let server = http.createServer(function (req, res) {
-        let urlPath = url.parse(req.url).pathname;
-        differentResponseData(urlPath,res,restMap);
+        const urlParsed = url.parse(req.url)
+        differentResponseData(urlParsed.pathname,res,restMap);
     });
     server.listen(port,hostname,()=>{
         console.log(`Server started on port:${port} with hostname:${hostname} complete url: %s`,`http://${hostname}:${port}`)
