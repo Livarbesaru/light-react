@@ -9,8 +9,8 @@ class Properties{
     async addProperties(dir,file){
         return new Promise((res,rej)=>{
             fileReader.readFileFromPath(dir,file).then(response => {
+                const {data,type,code,name} = response;
                 if(response.code === 200){
-                    const {data,type,code,name} = response;
                     let parsedData = JSON.parse(data.toString('utf8'));
                     this.map.set(name,parsedData);
                     res(`Properties file ${name} has been loaded`);
