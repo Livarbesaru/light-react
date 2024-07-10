@@ -10,7 +10,7 @@ class Reader {
         this.PATH_FROM_SERVER_JS = "./"
     }
 
-    async readFileFromPath(dir, file) {
+    async readFileFromPath(dir, file,specifyPath=null) {
         return new Promise((res, rej) => {
             let dataToReturn = { data: [], type: "", code: 200, name: file, pathToFile: "" };
             fs.readFile(this.PATH_FROM_SERVER_JS + dir + this.FILE_SEPARATOR + file, (err, data) => {
@@ -23,7 +23,7 @@ class Reader {
                     const dataInfo = file.split(this.FILE_TYPE_SEPARATOR);
                     dataToReturn["name"] = dataInfo.shift();
                     dataToReturn["type"] = dataInfo.reduce((a,b)=>a+this.FILE_TYPE_SEPARATOR+b);
-                    dataToReturn["pathToFile"] = dir.replace("./", "/") + this.FILE_SEPARATOR + dataToReturn["name"]
+                    dataToReturn["pathToFile"] = specifyPath === null ? dir.replace("./", "/") + this.FILE_SEPARATOR + dataToReturn["name"] : specifyPath;
                     res(dataToReturn);
                     console.log(`file ${file} has been loaded`);
                 }

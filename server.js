@@ -13,8 +13,11 @@ propertiesReader.addProperties("properties","properties.json").then(res =>{
 async function start(generalProperties){
     const [port,hostname] = [generalProperties["server"]["port"],generalProperties["server"]["hostname"]];
     let restMap = new Map();
-    for(snglResource of await fileReader.walkPath("./"+generalProperties["server"]["pages-path"],[])){
-        restMap.set(snglResource["pathToFile"],{data:snglResource["data"],type:generalProperties["server"]["http-data-format"][snglResource["type"]]})
+    const index = await fileReader.readFileFromPath(generalProperties["server"]["main-path"],generalProperties["server"]["main-file"],generalProperties["server"]["main-route"]);
+    for(snglResource of [...(await fileReader.walkPath("./"+generalProperties["server"]["pages-path"],[])),index]){
+        const resourceRestPath = snglResource["pathToFile"];
+        const resourceToSet = {data:snglResource["data"],type:generalProperties["server"]["http-format-data"][snglResource["type"]]};
+        restMap.set(resourceRestPath,resourceToSet);
     }
     let server = http.createServer(function (req, res) {
         let urlPath = url.parse(req.url).pathname;
