@@ -36,7 +36,7 @@ class Reader {
             this.reader.readdir(dir, (err, files) => {
                 if (err) {
                     rej("not ok")
-                    console.error("errore nella lettura durante la camminata ", err)
+                    throw new Error("error reading files while walking down tree %s",err)
                 }else{
                     filesToRead = files;
                     res("ok")
@@ -49,7 +49,7 @@ class Reader {
             await new Promise((res,rej)=>{
                 fs.stat(filePath, async (errStat, resStat) => {
                     if(errStat){
-                        console.error("stat not recieved for file "+filePath)
+                        throw new Error("stat not recieved for file %s",filePath)
                     }else{
                         if (resStat.isDirectory()) {
                             res(await this.walkPath(filePath, arrayToFill));
@@ -62,7 +62,7 @@ class Reader {
                 });
             });
         }
-        return "ok";
+        return arrayToFill;
     }
 }
 

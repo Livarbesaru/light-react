@@ -12,10 +12,8 @@ propertiesReader.addProperties("properties","properties.json").then(res =>{
 
 async function start(generalProperties){
     const [port,hostname] = [generalProperties["server"]["port"],generalProperties["server"]["hostname"]];
-    let resources = [];
     let restMap = new Map();
-    await fileReader.walkPath("./"+generalProperties["server"]["pages-path"],resources);
-    for(snglResource of resources){
+    for(snglResource of await fileReader.walkPath("./"+generalProperties["server"]["pages-path"],[])){
         restMap.set(snglResource["pathToFile"],{data:snglResource["data"],type:generalProperties["server"]["http-data-format"][snglResource["type"]]})
     }
     let server = http.createServer(function (req, res) {
