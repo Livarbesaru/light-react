@@ -77,10 +77,13 @@ function fillResourceMap(restMap,snglmanagedRequest,relativeResource){
     node[snglmanagedRequest["method"]]={execute:doRequest,manager:snglmanagedRequest};
 }
 
-function doRequest(request,response,snglmanagedRequest){
+async function doRequest(request,response,snglmanagedRequest){
     const validation = snglmanagedRequest.validate(request,snglmanagedRequest.rules);
     if(validation){
-        const responsePackage = snglmanagedRequest.elaborateRequest(request);
+        let responsePackage;
+        await new Promise((res,rej)=>{
+            responsePackage = snglmanagedRequest.elaborateRequest(request,res);
+        }).then((returningValue)=>{responsePackage=returningValue})
         acceptRequest(response,responsePackage["data"],responsePackage["headers"],"utf8");
     }else{
         rejectRequest(response,400)

@@ -21,7 +21,7 @@ class PathDescriptor{
         rules={"params":[],"body":[],"headers":[],"session":[]},
         validate=(request,ruleMap=this.rules)=>true,
         transformResource=(resource,func)=>resource,
-        elaborateResponse=(request,resource)=>{return {"data":"","headers":{"Content-Type": "text/html","Content-Length":1}}}
+        elaborateResponse= async (request,resource)=>{return {"data":"","headers":{"Content-Type": "text/html","Content-Length":1}}}
     ){
         this.path=path;
         this.resourcePath=resourcePath;
@@ -37,8 +37,14 @@ class PathDescriptor{
         this.resource = this.transformResource(resource);
     }
 
-    elaborateRequest(request){
-        return this.elaborateResponse(request,this.resource);
+    async elaborateRequest(request,res){
+        let obj = {};
+        try{
+            obj = this.elaborateResponse(request,this.resource);
+        }catch(error){
+            console.error("error while returning request data %s",error)
+        }
+        res(obj);
     }
 }
 

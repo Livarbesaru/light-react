@@ -24,6 +24,8 @@ async function marshallRequest(request){
         .on('end', () => {
           if(body.length > 0){
             body = JSON.parse(Buffer.concat(body).toString());
+          }else{
+            body = {};
           }
           res("ok");
       });
