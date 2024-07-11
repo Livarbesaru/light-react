@@ -14,7 +14,7 @@ function marshallRequest(request){
     let body = [];
     request
       .on('error', err => {
-        console.error(err);
+        throw new Error("error while reading body %s",err)
       })
       .on('data', chunk => {
         body.push(chunk);

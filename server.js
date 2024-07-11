@@ -19,8 +19,13 @@ async function start(generalProperties){
     let restMap = new Map();
     await new Promise((res,rej)=>defineRoutes(restMap,generalProperties,res));
     let server = http.createServer(function (req, res) {
-        const requestMarshalled = requestMarshaller(req);
-        differentResponseData(requestMarshalled,res,restMap,generalProperties);
+        try{
+            const requestMarshalled = requestMarshaller(req);
+            differentResponseData(requestMarshalled,res,restMap);
+        }catch(error){
+            console.error(error);
+            rejectRequest(res,500);
+        }
     });
     server.listen(port,hostname,()=>{
         console.log(`Server started on port:${port} with hostname:${hostname} complete url: %s`,`http://${hostname}:${port}`)
@@ -28,7 +33,7 @@ async function start(generalProperties){
 }
 
 
-function differentResponseData(request,res,restMap,generalProperties){
+function differentResponseData(request,res,restMap){
     console.log("call on path:%s",request.path)
     try{
         let wantedPath = restMap.get(request.path);

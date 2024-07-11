@@ -2,7 +2,6 @@
   "server": {
     "hostname": "localhost",
     "port": 3000,
-    "main-route":"/",
     "pages-path":"pages",
     "http-format-data":{
       "html":"text/html",
