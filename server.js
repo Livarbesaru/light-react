@@ -1,7 +1,10 @@
-const url = require('url');
 const propertiesReader = require("./utils/properties");
 const fileReader = require("./utils/fileReader");
 const http = require("http");
+const requireFromString = require("./utils/requireFromString");
+const requestMarshaller = require("./utils/requestMarshall");
+
+//lettura delle properti principali con relativa partenza del server in ascolto
 propertiesReader.addProperties("properties","properties.json").then(res =>{
     console.log(res);
     const generalProperties = propertiesReader.getProperties("properties");
@@ -10,18 +13,14 @@ propertiesReader.addProperties("properties","properties.json").then(res =>{
     }
 })
 
+// partenza del server successiva alla lettura dell'alberatura delle path e dei manager
 async function start(generalProperties){
     const [port,hostname] = [generalProperties["server"]["port"],generalProperties["server"]["hostname"]];
     let restMap = new Map();
-    const index = await fileReader.readFileFromPath(generalProperties["server"]["main-path"],generalProperties["server"]["main-file"],generalProperties["server"]["main-route"]);
-    for(snglResource of [...(await fileReader.walkPath("./"+generalProperties["server"]["pages-path"],[])),index]){
-        const resourceRestPath = snglResource["pathToFile"];
-        const resourceToSet = {data:snglResource["data"],type:generalProperties["server"]["http-format-data"][snglResource["type"]]};
-        restMap.set(resourceRestPath,resourceToSet);
-    }
+    await new Promise((res,rej)=>defineRoutes(restMap,generalProperties,res));
     let server = http.createServer(function (req, res) {
-        const urlParsed = url.parse(req.url)
-        differentResponseData(urlParsed.pathname,res,restMap);
+        const requestMarshalled = requestMarshaller(req);
+        differentResponseData(requestMarshalled,res,restMap,generalProperties);
     });
     server.listen(port,hostname,()=>{
         console.log(`Server started on port:${port} with hostname:${hostname} complete url: %s`,`http://${hostname}:${port}`)
@@ -29,32 +28,62 @@ async function start(generalProperties){
 }
 
 
-function differentResponseData(path,res,restMap){
-    console.log("call on path:%s",path)
+function differentResponseData(request,res,restMap,generalProperties){
+    console.log("call on path:%s",request.path)
     try{
-        if(restMap.get(path) != null){
-            let resource = restMap.get(path);
-            let data = restMap.get(path)["data"];
-            if(data == null){
-                data = restMap.get("/")["data"]
-                path = "/"
+        let wantedPath = restMap.get(request.path);
+        if(wantedPath != null){
+            let elaborate = wantedPath[request.method];
+            if(elaborate == null){
+                rejectRequest(res,404);
             }
-            acceptRequest(res,data,{"Content-Type": resource["type"],"Content-Length":resource["data"].length},"utf8")
+            elaborate.execute(request,res,elaborate.manager)
         }else{
             rejectRequest(res,404);
         }
     }catch(error){
-        console.error("error with path %s %s",path,error);
+        console.error("error with path %s %s",request.path,error);
         rejectRequest(res,500);
     }
 }
 
+async function defineRoutes(restMap,generalProperties,callbackRes){
+    const pathsLoaded = await fileReader.walkPath("./"+generalProperties["server"]["pages-path"],{"route-managers":{},"loaded-data":{}},"manager.js");
+    const pathManagers = pathsLoaded["route-managers"];
+    const loadedData = new Map(Object.entries(pathsLoaded["loaded-data"]));
+    for(const[snglPathManager,manager] of Object.entries(pathManagers)){
+        const managedRequestList = requireFromString(manager["data"].toString('utf8'));
+        for(snglmanagedRequest of managedRequestList){
+            fillResourceMap(restMap,snglmanagedRequest,loadedData.get(snglmanagedRequest["resourcePath"]))
+        }
+    }
+    callbackRes("ok");
+}
+
+function fillResourceMap(restMap,snglmanagedRequest,relativeResource){
+    let node = restMap.get(snglmanagedRequest["path"]);
+    snglmanagedRequest.setTransformedResource(relativeResource["data"]);
+    if(node == null){
+        restMap.set(snglmanagedRequest["path"],{});
+        node = restMap.get(snglmanagedRequest["path"]);
+    }
+    node[snglmanagedRequest["method"]]={execute:doRequest,manager:snglmanagedRequest};
+}
+
+function doRequest(request,response,snglmanagedRequest){
+    const validation = snglmanagedRequest.validate(request,snglmanagedRequest.rules);
+    if(validation){
+        const responsePackage = snglmanagedRequest.elaborateRequest(request);
+        acceptRequest(response,responsePackage["data"],responsePackage["headers"],"utf8");
+    }else{
+        rejectRequest(response,400)
+    }
+}
 function acceptRequest(res,data,headers,encoding){
     for(const [key,value] of Object.entries(headers)){
         res.setHeader(key,value);
     }
     res.writeHead(200);
-    res.write(data,encoding);
     res.end(data,encoding);
 }
 function rejectRequest(res,fault){

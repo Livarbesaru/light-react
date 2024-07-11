@@ -31,7 +31,7 @@ class Reader {
         })
     }
 
-    async walkPath(dir, arrayToFill) {
+    async walkPath(dir, mappingObject, extensionManager=null) {
         let filesToRead = [];
         await new Promise((res,rej)=>{
             this.reader.readdir(dir, (err, files) => {
@@ -53,17 +53,21 @@ class Reader {
                         throw new Error("stat not recieved for file %s",filePath)
                     }else{
                         if (resStat.isDirectory()) {
-                            res(await this.walkPath(filePath, arrayToFill));
-                        } else if (resStat.isFile()) {
+                            res(await this.walkPath(filePath, mappingObject));
+                        } else if (extensionManager != null && resStat.isFile() && file.endsWith(extensionManager)) {
                             let toAdd = await this.readFileFromPath(dir, file);
-                            arrayToFill.push(toAdd);
-                            res("ok")
+                            mappingObject["route-managers"][toAdd["pathToFile"]] = toAdd;
+                            res("ok");
+                        }else if(resStat.isFile()){
+                            let toAdd = await this.readFileFromPath(dir, file);
+                            mappingObject["loaded-data"][toAdd["pathToFile"]] = toAdd;
+                            res("ok");
                         }
                     }
                 });
             });
         }
-        return arrayToFill;
+        return mappingObject;
     }
 }
 
