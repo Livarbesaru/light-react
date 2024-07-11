@@ -1,0 +1,44 @@
+
+//Classi relative alla mappatura delle richieste per la gestione tramite i manager
+/*const [PathDescriptor,BodyDescriptor,Rule] = require("./model/path-descriptor.js");
+const requireFromString = require("./utils/requireFromString.js");
+
+const definePathTestJS = new PathDescriptor(
+    "/pages/test",
+    "/pages/test",
+    "POST",
+    new BodyDescriptor(),
+    {
+        "params":[
+            new Rule(
+                (request)=>{return request.params.get("testParam")},
+                (obj)=> obj != null
+            )
+        ],
+        "body":[],
+        "headers":[],
+        "session":[]
+    },
+    (request,rulesMap)=>{
+        let error = 0;
+        for(const [context,rules] of Object.entries(rulesMap)){
+            for(const rule of rules){
+                const obj = rule.getDataFromRequest(request);
+                const result = rule.validate(obj);
+                error = result ? error : error+1;
+            }
+        }
+        return error === 0;
+    },
+    (resource)=>requireFromString(resource.toString('utf8')),
+    (request,resource)=>{
+        let stringJson = JSON.stringify(resource);
+        return {
+        "data":stringJson,
+        "headers":{"Content-Type": "application/json"}
+        };
+    }
+);
+
+module.exports = [definePathTestJS];
+*/
