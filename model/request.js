@@ -1,9 +1,9 @@
 class Request{
-    constructor(path,method,params,json,headers,session){
+    constructor(path,method,params,body,headers,session){
         this.path=path;
         this.method=method;
         this.params=params;
-        this.json=json;
+        this.body=body;
         this.headers=headers;
         this.session=session;
     }

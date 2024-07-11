@@ -2,7 +2,7 @@ const Request = require("../model/request");
 const url = require('url');
 
 
-function marshallRequest(request){
+async function marshallRequest(request){
     const urlParsed = url.parse(request.url)
     const query = [...(urlParsed.query!=null ? urlParsed.query : "").split("&")];
     const queryAsMap = new Map();
@@ -12,18 +12,21 @@ function marshallRequest(request){
         queryAsMap.set(first,rest);
     }
     let body = [];
-    request
-      .on('error', err => {
-        throw new Error("error while reading body %s",err)
-      })
-      .on('data', chunk => {
-        body.push(chunk);
-      })
-      .on('end', () => {
-        body = Buffer.concat(body).toString();
-        // At this point, we have the headers, method, url and body, and can now
-        // do whatever we need to in order to respond to this request.
-    });
+    await new Promise((res,rej)=>{
+      request.
+        on('error', err => {
+          rej("not ok");
+          throw new Error("error while reading body %s",err)
+        })
+        .on('data', chunk => {
+          console.log(chunk);
+          body.push(chunk);
+        })
+        .on('end', () => {
+          body = JSON.parse(Buffer.concat(body).toString());
+          res("ok");
+      });
+    })
     return new Request(urlParsed.pathname,request.method.toUpperCase(),queryAsMap,body,request.headers,{});
 }
 

@@ -18,9 +18,9 @@ async function start(generalProperties){
     const [port,hostname] = [generalProperties["server"]["port"],generalProperties["server"]["hostname"]];
     let restMap = new Map();
     await new Promise((res,rej)=>defineRoutes(restMap,generalProperties,res));
-    let server = http.createServer(function (req, res) {
+    let server = http.createServer(async function (req, res) {
         try{
-            const requestMarshalled = requestMarshaller(req);
+            const requestMarshalled = await requestMarshaller(req);
             differentResponseData(requestMarshalled,res,restMap);
         }catch(error){
             console.error(error);
