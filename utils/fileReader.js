@@ -53,7 +53,7 @@ class Reader {
                         throw new Error("stat not recieved for file %s",filePath)
                     }else{
                         if (resStat.isDirectory()) {
-                            res(await this.walkPath(filePath, mappingObject));
+                            res(await this.walkPath(filePath, mappingObject,extensionManager));
                         } else if (extensionManager != null && resStat.isFile() && file.endsWith(extensionManager)) {
                             let toAdd = await this.readFileFromPath(dir, file);
                             mappingObject["route-managers"][toAdd["pathToFile"]] = toAdd;
