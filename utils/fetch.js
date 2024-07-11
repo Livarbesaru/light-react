@@ -17,7 +17,8 @@ async function fetch(options, httpsOn = false) {
         await new Promise((resolve, reject) => {
             req = protocol.request(options, (response) => {
                 response.on('error', (err) => {
-                    reject(`Errore nella risposta: ${err.message}`);
+                    reject("not ok")
+                    throw new Error(`Errore nella risposta: ${err.message}`);
                 })
                 .on('data', (chunk) => {
                     body.push(chunk);
