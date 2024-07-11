@@ -19,11 +19,12 @@ async function marshallRequest(request){
           throw new Error("error while reading body %s",err)
         })
         .on('data', chunk => {
-          console.log(chunk);
           body.push(chunk);
         })
         .on('end', () => {
-          body = JSON.parse(Buffer.concat(body).toString());
+          if(body.length > 0){
+            body = JSON.parse(Buffer.concat(body).toString());
+          }
           res("ok");
       });
     })

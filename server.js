@@ -41,10 +41,12 @@ function differentResponseData(request,res,restMap){
             let elaborate = wantedPath[request.method];
             if(elaborate == null){
                 rejectRequest(res,404);
+                return;
             }
             elaborate.execute(request,res,elaborate.manager)
         }else{
             rejectRequest(res,404);
+            return;
         }
     }catch(error){
         console.error("error with path %s %s",request.path,error);
