@@ -34,13 +34,13 @@ class PathDescriptor{
     }
 
     setTransformedResource(resource){
-        this.resource = this.transformResource(resource);
+        this.resources = this.transformResource(resource);
     }
 
     async elaborateRequest(request,res){
         let obj = {};
         try{
-            obj = this.elaborateResponse(request,this.resource);
+            obj = this.elaborateResponse(request,this.resources);
         }catch(error){
             console.error("error while returning request data %s",error)
         }

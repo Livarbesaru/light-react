@@ -61,7 +61,11 @@ async function defineRoutes(restMap,generalProperties,callbackRes){
     for(const[snglPathManager,manager] of Object.entries(pathManagers)){
         const managedRequestList = requireFromString(manager["data"].toString('utf8'));
         for(snglmanagedRequest of managedRequestList){
-            fillResourceMap(restMap,snglmanagedRequest,loadedData.get(snglmanagedRequest["resourcePath"]))
+            const resourcesToPass = {};
+            for(const res of snglmanagedRequest["resourcePath"]){
+                resourcesToPass[res]=loadedData.get(res)["data"];
+            }
+            fillResourceMap(restMap,snglmanagedRequest,resourcesToPass);
         }
     }
     callbackRes("ok");
@@ -69,7 +73,7 @@ async function defineRoutes(restMap,generalProperties,callbackRes){
 
 function fillResourceMap(restMap,snglmanagedRequest,relativeResource){
     let node = restMap.get(snglmanagedRequest["path"]);
-    snglmanagedRequest.setTransformedResource(relativeResource["data"]);
+    snglmanagedRequest.setTransformedResource(relativeResource);
     if(node == null){
         restMap.set(snglmanagedRequest["path"],{});
         node = restMap.get(snglmanagedRequest["path"]);
