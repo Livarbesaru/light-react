@@ -48,5 +48,15 @@ class PathDescriptor{
     }
 }
 
-
-module.exports = [PathDescriptor,BodyDescriptor,Rule];
+function genericValidation(request,rulesMap){
+    let error = 0;
+    for(const [context,rules] of Object.entries(rulesMap)){
+        for(const rule of rules){
+            const obj = rule.getDataFromRequest(request);
+            const result = rule.validate(obj);
+            error = result ? error : error+1;
+        }
+    }
+    return error === 0;
+}
+module.exports = [PathDescriptor,BodyDescriptor,Rule,genericValidation];
