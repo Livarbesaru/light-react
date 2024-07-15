@@ -15,7 +15,7 @@ class BodyDescriptor{
 class PathDescriptor{
     constructor(
         path,
-        resourcePath,
+        resourcesPath,
         method="GET",
         body={},
         rules={"params":[],"body":[],"headers":[],"session":[]},
@@ -24,7 +24,7 @@ class PathDescriptor{
         elaborateResponse= async (request,resource)=>{return {"data":"","headers":{"Content-Type": "text/html","Content-Length":1}}}
     ){
         this.path=path;
-        this.resourcePath=resourcePath;
+        this.resourcesPath=resourcesPath;
         this.method=method;
         this.body=body;
         this.rules=rules;

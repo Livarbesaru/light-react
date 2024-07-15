@@ -2,10 +2,14 @@
   "server": {
     "hostname": "localhost",
     "port": 3000,
-    "pages-path":"pages",
-    "http-format-data":{
-      "html":"text/html",
-      "js":"text/javascript"
+    "pages-path":"pages"
+  },
+  "data-sources": {
+    "school":{
+      "db": "school",
+      "url": "mongodb://127.0.0.1:27017/school",
+      "username":"username",
+      "password":"password"
     }
   }
 }

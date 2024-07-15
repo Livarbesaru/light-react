@@ -68,6 +68,7 @@ async function defineRoutes(restMap,generalProperties,callbackRes){
             fillResourceMap(restMap,snglmanagedRequest,resourcesToPass);
         }
     }
+    loadedData = new Map();
     callbackRes("ok");
 }
 

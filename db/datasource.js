@@ -13,7 +13,7 @@ class Datasource{
     }
 
     createModel(name,schema){
-        this.mongo.model(name,schema);
+        return this.mongo.model(name,schema);
     }
 }
 
