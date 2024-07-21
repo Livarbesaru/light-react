@@ -57,12 +57,12 @@ function differentResponseData(request,res,restMap){
 async function defineRoutes(restMap,generalProperties,callbackRes){
     const pathsLoaded = await fileReader.walkPath("./"+generalProperties["server"]["pages-path"],{"route-managers":{},"loaded-data":{}},"manager.js");
     const pathManagers = pathsLoaded["route-managers"];
-    const loadedData = new Map(Object.entries(pathsLoaded["loaded-data"]));
+    let loadedData = new Map(Object.entries(pathsLoaded["loaded-data"]));
     for(const[snglPathManager,manager] of Object.entries(pathManagers)){
         const managedRequestList = requireFromString(manager["data"].toString('utf8'));
         for(snglmanagedRequest of managedRequestList){
             const resourcesToPass = {};
-            for(const res of snglmanagedRequest["resourcePath"]){
+            for(const res of snglmanagedRequest["resourcesPath"]){
                 resourcesToPass[res]=loadedData.get(res)["data"];
             }
             fillResourceMap(restMap,snglmanagedRequest,resourcesToPass);
