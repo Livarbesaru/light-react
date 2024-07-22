@@ -5,19 +5,11 @@ class Rule{
     }
 }
 
-class BodyDescriptor{
-    constructor(rules={},validate=(body,rules)=>true){
-        this.rules=rules;
-        this.validate=validate;
-    }
-}
-
 class PathDescriptor{
     constructor(
         path,
         resourcesPath,
         method="GET",
-        body={},
         rules={"params":[],"body":[],"headers":[],"session":[]},
         validate=(request,ruleMap=this.rules)=>true,
         transformResource=(resource,func)=>resource,
@@ -26,7 +18,6 @@ class PathDescriptor{
         this.path=path;
         this.resourcesPath=resourcesPath;
         this.method=method;
-        this.body=body;
         this.rules=rules;
         this.validate=validate;
         this.transformResource=transformResource;
@@ -59,4 +50,4 @@ function genericValidation(request,rulesMap){
     }
     return error === 0;
 }
-module.exports = [PathDescriptor,BodyDescriptor,Rule,genericValidation];
+module.exports = [PathDescriptor,Rule,genericValidation];
